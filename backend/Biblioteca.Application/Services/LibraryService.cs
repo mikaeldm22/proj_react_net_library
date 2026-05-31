@@ -2,6 +2,9 @@
 
 using Biblioteca.Application.DTOs;
 using Biblioteca.Application.Interfaces;
+using Biblioteca.Domain.Entities;
+using Biblioteca.Domain.Enums;
+using Biblioteca.Domain.Interfaces;
 
 namespace Biblioteca.Application.Services
 {
@@ -9,44 +12,124 @@ namespace Biblioteca.Application.Services
     {
 
         private readonly ILibraryRepository _repository;
-        public Task<BookDto> AddBookAsync(CreateBookDto createBookDto)
+
+        public LibraryService(ILibraryRepository repository)
         {
-            throw new NotImplementedException();
+            _repository = repository;
         }
 
-        public Task<BookDto> BorrowBookAsync(int id, BorrowBookDto borrowBookDto)
+        public async Task<BookDto> BorrowBookAsync(string code, BorrowBookDto borrowBookDto)
         {
-            throw new NotImplementedException();
+            var book = await _repository.GetBookByCodeAsync(code);
+
+            if (book == null)
+            {
+                throw new KeyNotFoundException($"O Livro com o código {code} não foi encontrado.");
+            }
+
+            if (book.Status == BookStatus.EMPRESTADO)
+            {
+                throw new InvalidOperationException($"O Livro com o código {code} já está emprestado.");
+            }
+
+            book.Status = BookStatus.EMPRESTADO;
+            book.BorrewedAt = DateTime.UtcNow;
+            book.BorrowerName = borrowBookDto.BorrowerName;
+
+            var updatedBook = await _repository.UpdateBookAsync(book);
+            return MapToBookDto(updatedBook);
+
         }
 
-        public Task<bool> DeleteBookAsync(int id)
+        public async Task<BookDto> CreateBookAsync(CreateBookDto createBookDto)
         {
-            throw new NotImplementedException();
+            var book = new BookEntity
+            {
+                Code = createBookDto.Code,
+                Title = createBookDto.Title,
+                Author = createBookDto.Author,
+                Publisher = createBookDto.Publisher,
+                Genre = createBookDto.Genre,
+                Year = createBookDto.Year,
+                Status = BookStatus.DISPONIVEL,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var createdBook = await _repository.AddBookAsync(book);
+            return MapToBookDto(createdBook);
         }
 
-        public Task<IEnumerable<BookDto>> GetAllBooksAsync()
+        public async Task DeleteBookAsync(string code)
         {
-            throw new NotImplementedException();
+            await _repository.DeleteBookAsync(code);
         }
 
-        public Task<BookDto> GetBookByIdAsync(int id)
+        public async Task<IEnumerable<BookDto>> GetAllBooksAsync()
         {
-            throw new NotImplementedException();
+            var books = await _repository.GetAllBooksAsync();
+            return books.Select(MapToBookDto);
         }
 
-        public Task<BookStatsDto> GetBookStatsAsync()
+        public async Task<BookDto?> GetBookByCodeAsync(string code)
         {
-            throw new NotImplementedException();
+            var book = await _repository.GetBookByCodeAsync(code);
+            return book is null ? null : MapToBookDto(book);
         }
 
-        public Task<BookDto> ReturnBookAsync(int id)
+        public async Task<BookStatsDto> GetBookStatsAsync()
         {
-            throw new NotImplementedException();
+            var books = await _repository.GetAllBooksAsync();
+            var availableBooks = await _repository.GetAvailableBooksAsync();
+
+            return new BookStatsDto
+            {
+                TotalBooks = books.Count(),
+                AvailableBooks = availableBooks,
+                BorrowedBooks = books.Count() - availableBooks
+            };
         }
 
-        public Task<BookDto> UpdateBookAsync(int id, CreateBookDto updateBookDto)
+
+        public async Task<BookDto> ReturnBookAsync(string code)
         {
-            throw new NotImplementedException();
+            var book = await _repository.GetBookByCodeAsync(code);
+
+            if (book == null)
+            {
+                throw new KeyNotFoundException($"O Livro com o código {code} não foi encontrado.");
+            }
+
+            if (book.Status == BookStatus.DISPONIVEL)
+            {
+                throw new InvalidOperationException($"O Livro com o código {code} já foi devolvido.");
+            }
+
+            book.Status = BookStatus.DISPONIVEL;
+            book.ReturnedAt = DateTime.UtcNow;
+            book.BorrowerName = null;
+
+            var updatedBook = await _repository.UpdateBookAsync(book);
+            return MapToBookDto(updatedBook);
         }
+
+
+        private static BookDto MapToBookDto(BookEntity book)
+        {
+            return new BookDto
+            {
+                Code = book.Code,
+                Title = book.Title,
+                Author = book.Author,
+                Year = book.Year,
+                Status = book.Status,
+                Genre = book.Genre,
+                Publisher = book.Publisher,
+                BorrowedAt = book.BorrewedAt,
+                BorrowerName = book.BorrowerName,
+                CreatedAt = book.CreatedAt,
+                ReturnedAt = book.ReturnedAt
+            };
+        }
+
     }
 }

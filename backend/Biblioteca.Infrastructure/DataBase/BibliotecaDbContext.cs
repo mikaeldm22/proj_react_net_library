@@ -18,11 +18,17 @@ namespace Biblioteca.Infrastructure.DataBase
         {
             modelBuilder.Entity<BookEntity>(entity =>
             {
-                entity.HasKey(e =>  e.Id);
+                entity.HasKey(e => e.Id);
                 entity.Property(e => e.Code).IsRequired().HasMaxLength(20);
                 entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.Author).IsRequired().HasMaxLength(150);
-            })
+                entity.Property(e => e.Publisher).IsRequired().HasMaxLength(150);
+                entity.Property(e => e.Genre).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Year).IsRequired();
+                entity.Property(e => e.Status).IsRequired();
+                entity.Property(e => e.CreatedAt).IsRequired();
+                entity.Property(e => e.BorrowerName).HasMaxLength(150);
+            });
         }
     }
 }

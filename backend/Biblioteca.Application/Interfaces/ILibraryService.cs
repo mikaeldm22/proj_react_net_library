@@ -5,11 +5,10 @@ namespace Biblioteca.Application.Interfaces;
 public interface ILibraryService
 {
     Task<IEnumerable<BookDto>> GetAllBooksAsync();
-    Task<BookDto> GetBookByIdAsync(int id);
+    Task<BookDto?> GetBookByCodeAsync(string code);
     Task<BookStatsDto> GetBookStatsAsync();
-    Task<BookDto> AddBookAsync(CreateBookDto createBookDto);
-    Task<BookDto> UpdateBookAsync(int id, CreateBookDto updateBookDto);
-    Task<bool> DeleteBookAsync(int id);
-    Task<BookDto> BorrowBookAsync(int id, BorrowBookDto borrowBookDto);
-    Task<BookDto> ReturnBookAsync(int id);
+    Task<BookDto> CreateBookAsync(CreateBookDto createBookDto);
+    Task DeleteBookAsync(string code);
+    Task<BookDto> BorrowBookAsync(string code, BorrowBookDto borrowBookDto);
+    Task<BookDto> ReturnBookAsync(string code);
 }

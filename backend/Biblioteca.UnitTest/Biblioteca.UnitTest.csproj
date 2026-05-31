@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Moq" Version="4.20.70" />
+    <PackageReference Include="MSTest" Version="4.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Biblioteca.API\Biblioteca.API.csproj" />
+    <ProjectReference Include="..\Biblioteca.Application\Biblioteca.Application.csproj" />
+    <ProjectReference Include="..\Biblioteca.Domain\Biblioteca.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
