@@ -1,7 +1,6 @@
 ﻿
 
 using Biblioteca.Domain.Entities;
-using Biblioteca.Domain.Enums;
 using Biblioteca.Domain.Interfaces;
 using Biblioteca.Infrastructure.DataBase;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +24,7 @@ namespace Biblioteca.Infrastructure.Repositories
 
         public async Task DeleteBookAsync(string code)
         {
-            var book = await _context.Books.FindAsync(code);
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.Code == code);
             if (book is not null)
             {
                 _context.Books.Remove(book);
@@ -40,7 +39,7 @@ namespace Biblioteca.Infrastructure.Repositories
 
         public async Task<int> GetAvailableBooksAsync()
         {
-            return await _context.Books.CountAsync(b => b.Status == BookStatus.DISPONIVEL);
+            return await _context.Books.CountAsync(b => b.Status == "DISPONIVEL");
         }
 
        

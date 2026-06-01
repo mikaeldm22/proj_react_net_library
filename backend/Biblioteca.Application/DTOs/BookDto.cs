@@ -1,4 +1,3 @@
-using Biblioteca.Domain.Enums;
 
 namespace Biblioteca.Application.DTOs;
 
@@ -10,7 +9,7 @@ public class BookDto
     public string Publisher { get; set; } = string.Empty;
     public string Genre { get; set; } = string.Empty;
     public int Year { get; set; }
-    public BookStatus Status { get; set; }
+    public string? Status { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? BorrowedAt { get; set; }
     public DateTime? ReturnedAt { get; set; }

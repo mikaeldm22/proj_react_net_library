@@ -377,6 +377,47 @@ public class LibraryControllerTests
 
     #endregion
 
+    #region DeleteBook Tests
+
+    [TestMethod]
+    public async Task DeleteBook_Should_Return_NoContent_When_Book_Deleted_Successfully()
+    {
+        // Arrange
+        var code = "001";
+        _mockLibraryService.Setup(s => s.DeleteBookAsync(code)).Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _controller.DeleteBook(code);
+
+        // Assert
+        var noContentResult = result as NoContentResult;
+        Assert.IsNotNull(noContentResult);
+        Assert.AreEqual(204, noContentResult.StatusCode);
+
+        _mockLibraryService.Verify(s => s.DeleteBookAsync(code), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task DeleteBook_Should_Return_NotFound_When_Book_Not_Found()
+    {
+        // Arrange
+        var code = "999";
+        _mockLibraryService.Setup(s => s.DeleteBookAsync(code))
+            .ThrowsAsync(new KeyNotFoundException($"O Livro com o código {code} não foi encontrado."));
+
+        // Act
+        var result = await _controller.DeleteBook(code);
+
+        // Assert
+        var notFoundResult = result as NotFoundResult;
+        Assert.IsNotNull(notFoundResult);
+        Assert.AreEqual(404, notFoundResult.StatusCode);
+
+        _mockLibraryService.Verify(s => s.DeleteBookAsync(code), Times.Once);
+    }
+
+    #endregion
+
     #region GetLibraryStats Tests
 
     [TestMethod]

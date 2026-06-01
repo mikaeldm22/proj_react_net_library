@@ -1,7 +1,6 @@
 using Biblioteca.Application.DTOs;
 using Biblioteca.Application.Services;
 using Biblioteca.Domain.Entities;
-using Biblioteca.Domain.Enums;
 using Biblioteca.Domain.Interfaces;
 using Moq;
 
@@ -37,7 +36,7 @@ public class LibraryServiceTests
                 Publisher = "Publisher 1",
                 Genre = "Fiction",
                 Year = 2020,
-                Status = BookStatus.DISPONIVEL,
+                Status = "DISPONIVEL",
                 CreatedAt = DateTime.UtcNow
             },
             new BookEntity
@@ -49,7 +48,7 @@ public class LibraryServiceTests
                 Publisher = "Publisher 2",
                 Genre = "Non-Fiction",
                 Year = 2021,
-                Status = BookStatus.EMPRESTADO,
+                Status = "EMPRESTADO",
                 CreatedAt = DateTime.UtcNow
             }
         };
@@ -99,7 +98,7 @@ public class LibraryServiceTests
             Publisher = "Publisher",
             Genre = "Fiction",
             Year = 2020,
-            Status = BookStatus.DISPONIVEL,
+            Status = "DISPONIVEL",
             CreatedAt = DateTime.UtcNow
         };
 
@@ -157,7 +156,7 @@ public class LibraryServiceTests
             Publisher = createBookDto.Publisher,
             Genre = createBookDto.Genre,
             Year = createBookDto.Year,
-            Status = BookStatus.DISPONIVEL,
+            Status = "DISPONIVEL",
             CreatedAt = DateTime.UtcNow
         };
 
@@ -170,7 +169,7 @@ public class LibraryServiceTests
         Assert.IsNotNull(result);
         Assert.AreEqual(createBookDto.Code, result.Code);
         Assert.AreEqual(createBookDto.Title, result.Title);
-        Assert.AreEqual(BookStatus.DISPONIVEL, result.Status);
+        Assert.AreEqual("DISPONIVEL", result.Status);
         _mockRepository.Verify(r => r.AddBookAsync(It.IsAny<BookEntity>()), Times.Once);
     }
 
@@ -195,7 +194,7 @@ public class LibraryServiceTests
             Publisher = "Publisher",
             Genre = "Fiction",
             Year = 2020,
-            Status = BookStatus.DISPONIVEL,
+            Status = "DISPONIVEL",
             CreatedAt = DateTime.UtcNow
         };
 
@@ -208,7 +207,7 @@ public class LibraryServiceTests
             Publisher = "Publisher",
             Genre = "Fiction",
             Year = 2020,
-            Status = BookStatus.EMPRESTADO,
+            Status = "EMPRESTADO",
             BorrewedAt = DateTime.UtcNow,
             BorrowerName = borrowerName,
             CreatedAt = book.CreatedAt
@@ -222,7 +221,7 @@ public class LibraryServiceTests
 
         // Assert
         Assert.IsNotNull(result);
-        Assert.AreEqual(BookStatus.EMPRESTADO, result.Status);
+        Assert.AreEqual("EMPRESTADO", result.Status);
         Assert.AreEqual(borrowerName, result.BorrowerName);
         _mockRepository.Verify(r => r.GetBookByCodeAsync(code), Times.Once);
         _mockRepository.Verify(r => r.UpdateBookAsync(It.IsAny<BookEntity>()), Times.Once);
@@ -267,7 +266,7 @@ public class LibraryServiceTests
             Publisher = "Publisher",
             Genre = "Fiction",
             Year = 2020,
-            Status = BookStatus.EMPRESTADO,
+            Status = "EMPRESTADO",
             BorrowerName = "John Doe",
             BorrewedAt = DateTime.UtcNow,
             CreatedAt = DateTime.UtcNow
@@ -307,7 +306,7 @@ public class LibraryServiceTests
             Publisher = "Publisher",
             Genre = "Fiction",
             Year = 2020,
-            Status = BookStatus.EMPRESTADO,
+            Status = "EMPRESTADO",
             BorrowerName = "John Doe",
             BorrewedAt = DateTime.UtcNow,
             CreatedAt = DateTime.UtcNow
@@ -322,7 +321,7 @@ public class LibraryServiceTests
             Publisher = "Publisher",
             Genre = "Fiction",
             Year = 2020,
-            Status = BookStatus.DISPONIVEL,
+            Status = "DISPONIVEL",
             BorrowerName = null,
             ReturnedAt = DateTime.UtcNow,
             CreatedAt = book.CreatedAt
@@ -336,7 +335,7 @@ public class LibraryServiceTests
 
         // Assert
         Assert.IsNotNull(result);
-        Assert.AreEqual(BookStatus.DISPONIVEL, result.Status);
+        Assert.AreEqual("DISPONIVEL", result.Status);
         Assert.IsNull(result.BorrowerName);
         _mockRepository.Verify(r => r.GetBookByCodeAsync(code), Times.Once);
         _mockRepository.Verify(r => r.UpdateBookAsync(It.IsAny<BookEntity>()), Times.Once);
@@ -377,7 +376,7 @@ public class LibraryServiceTests
             Publisher = "Publisher",
             Genre = "Fiction",
             Year = 2020,
-            Status = BookStatus.DISPONIVEL,
+            Status = "DISPONIVEL",
             CreatedAt = DateTime.UtcNow
         };
 
@@ -407,9 +406,9 @@ public class LibraryServiceTests
         // Arrange
         var books = new List<BookEntity>
         {
-            new BookEntity { Id = Guid.NewGuid(), Code = "001", Status = BookStatus.DISPONIVEL, CreatedAt = DateTime.UtcNow },
-            new BookEntity { Id = Guid.NewGuid(), Code = "002", Status = BookStatus.EMPRESTADO, CreatedAt = DateTime.UtcNow },
-            new BookEntity { Id = Guid.NewGuid(), Code = "003", Status = BookStatus.DISPONIVEL, CreatedAt = DateTime.UtcNow }
+            new BookEntity { Id = Guid.NewGuid(), Code = "001", Status = "DISPONIVEL", CreatedAt = DateTime.UtcNow },
+            new BookEntity { Id = Guid.NewGuid(), Code = "002", Status = "EMPRESTADO", CreatedAt = DateTime.UtcNow },
+            new BookEntity { Id = Guid.NewGuid(), Code = "003", Status = "DISPONIVEL", CreatedAt = DateTime.UtcNow }
         };
 
         _mockRepository.Setup(r => r.GetAllBooksAsync()).ReturnsAsync(books);

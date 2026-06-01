@@ -24,6 +24,13 @@ public class LibraryController : ControllerBase
         return Ok(books);
     }
 
+    [HttpGet("stats")]
+    public async Task<ActionResult<BookStatsDto>> GetLibraryStats()
+    {
+        var stats = await _libraryService.GetBookStatsAsync();
+        return Ok(stats);
+    }
+
     [HttpGet("{code}")]
     public async Task<ActionResult<BookDto>> GetBookByCode(string code)
     {
@@ -82,10 +89,17 @@ public class LibraryController : ControllerBase
         }
     }
 
-    [HttpGet("stats")]
-    public async Task<ActionResult<BookStatsDto>> GetLibraryStats()
+    [HttpDelete("{code}")]
+    public async Task<ActionResult> DeleteBook(string code)
     {
-        var stats = await _libraryService.GetBookStatsAsync();
-        return Ok(stats);
+        try
+        {
+            await _libraryService.DeleteBookAsync(code);
+            return NoContent();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
     }
 }

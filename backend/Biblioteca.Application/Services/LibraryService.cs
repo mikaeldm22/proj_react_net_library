@@ -3,7 +3,6 @@
 using Biblioteca.Application.DTOs;
 using Biblioteca.Application.Interfaces;
 using Biblioteca.Domain.Entities;
-using Biblioteca.Domain.Enums;
 using Biblioteca.Domain.Interfaces;
 
 namespace Biblioteca.Application.Services
@@ -27,12 +26,12 @@ namespace Biblioteca.Application.Services
                 throw new KeyNotFoundException($"O Livro com o código {code} não foi encontrado.");
             }
 
-            if (book.Status == BookStatus.EMPRESTADO)
+            if (book.Status == "EMPRESTADO")
             {
                 throw new InvalidOperationException($"O Livro com o código {code} já está emprestado.");
             }
 
-            book.Status = BookStatus.EMPRESTADO;
+            book.Status = "EMPRESTADO";
             book.BorrewedAt = DateTime.UtcNow;
             book.BorrowerName = borrowBookDto.BorrowerName;
 
@@ -51,7 +50,7 @@ namespace Biblioteca.Application.Services
                 Publisher = createBookDto.Publisher,
                 Genre = createBookDto.Genre,
                 Year = createBookDto.Year,
-                Status = BookStatus.DISPONIVEL,
+                Status = "DISPONIVEL",
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -99,12 +98,12 @@ namespace Biblioteca.Application.Services
                 throw new KeyNotFoundException($"O Livro com o código {code} não foi encontrado.");
             }
 
-            if (book.Status == BookStatus.DISPONIVEL)
+            if (book.Status == "DISPONIVEL")
             {
                 throw new InvalidOperationException($"O Livro com o código {code} já foi devolvido.");
             }
 
-            book.Status = BookStatus.DISPONIVEL;
+            book.Status = "DISPONIVEL";
             book.ReturnedAt = DateTime.UtcNow;
             book.BorrowerName = null;
 
