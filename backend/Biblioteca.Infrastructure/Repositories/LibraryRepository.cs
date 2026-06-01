@@ -45,7 +45,7 @@ namespace Biblioteca.Infrastructure.Repositories
        
         public async Task<BookEntity?> GetBookByCodeAsync(string code)
         {
-            return await _context.Books.FindAsync(code);
+            return await _context.Books.FirstOrDefaultAsync(b => b.Code == code);
         }
 
         public async Task<BookEntity> UpdateBookAsync(BookEntity book)

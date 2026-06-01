@@ -60,12 +60,12 @@ export const libraryService = {
   },
 
   borrowBook: async (code: string, data: BorrowBookData): Promise<Book> => {
-    const response = await api.post<Book>(`/Library/${code}/borrow`, data);
+    const response = await api.patch<Book>(`/Library/${code}/borrow`, data);
     return response.data;
   },
 
   returnBook: async (code: string): Promise<Book> => {
-    const response = await api.post<Book>(`/Library/${code}/return`);
+    const response = await api.patch<Book>(`/Library/${code}/return`);
     return response.data;
   },
 

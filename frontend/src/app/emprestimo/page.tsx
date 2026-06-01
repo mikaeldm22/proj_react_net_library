@@ -82,7 +82,7 @@ export default function EmprestimoPage() {
                 <option value="" className="text-gray-500">📚 Escolha um livro disponível...</option>
                 {books.map((book) => (
                   <option key={book.code} value={book.code}>
-                    {book.title} — {book.author}
+                    {book.code} — {book.title} — {book.author}
                   </option>
                 ))}
                 </select>
